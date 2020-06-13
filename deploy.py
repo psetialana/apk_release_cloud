@@ -99,6 +99,10 @@ def get_target_file_name(app_name):
     app_name = app_name.lower()
     return '{name}.apk'.format(name=app_name).replace(' ','')
 
+def get_app(release_dir):
+    app_file = os.path.join(release_dir, "app-release.apk")
+    return app_file
+
 if __name__ == '__main__':
     # Command line arguments
     parser = argparse.ArgumentParser()
@@ -111,7 +115,11 @@ if __name__ == '__main__':
     
     target_app_file = get_target_file_name(options.app_name)
 
+    app_file = get_app(options.release_dir)
+    if app_file == None:
+        exit(OUTPUT_FILE_PARSING_ERROR)
+
     # Upload app file and get shared url
-    file_url = upload_to_dropbox(target_app_file, options.release_dir, options.dropbox_token, options.dropbox_folder)
+    file_url = upload_to_dropbox(target_app_file, app_file, options.dropbox_token, options.dropbox_folder)
     if file_url == None:
         exit(DROPBOX_ERROR_CODE)
